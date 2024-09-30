@@ -2,6 +2,8 @@
 
 namespace Lib\Application;
 
+use Exception;
+
 class Application
 {
     protected array $controllers;
@@ -11,11 +13,30 @@ class Application
         $this->controllers = $this->loadControllers();
     }
 
+    public function handleRequest()
+    {
+        $urlData = $this->resolveUrlData();
+        $controllerCls = $this->findController($urlData['controller'])  ;
+
+        if (!$controllerCls) {
+            throw new Exception('asdas');
+        }
+
+        $controllerAction = $this->findControllerAction($controllerCls, $urlData['action']);
+
+        if (!$controllerAction) {
+            throw new Exception('asdas');
+        }
+
+        $controller = new $controllerCls;
+        call_user_func([ $controller, $controllerAction ]);
+    }
+
     public function resolveUrlData()
     {
         ['path' => $path] = parse_url($_SERVER['REQUEST_URI']);
         
-        // Trim last slash and spaces from both sides.
+        // Trim slashes and spaces from both sides.
         $path = trim($path, '/');
         $path = trim($path);
         
@@ -49,6 +70,15 @@ class Application
         $found = array_values($found);
 
         return count($found) > 0 ? $found[0] : null;
+    }
+
+    public function findControllerAction(string $controllerCls, string $action)
+    {
+        if (strpos($action, 'Action') === false) {
+            $action = unslug($action, CASE_CAMEL) . 'Action';
+        }
+
+        return method_exists($controllerCls, $action) ? $action : null;
     }
 
     protected function loadControllers()

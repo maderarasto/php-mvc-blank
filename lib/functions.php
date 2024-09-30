@@ -62,13 +62,23 @@ if (!function_exists('slug')) {
 }
 
 if (!function_exists('unslug')) {
-    function unslug(string $slug) 
+    function unslug(string $slug, $case = CASE_PASCAL) 
     {
         $tokens = preg_split('/-/', $slug);
         $text = '';
 
-        foreach ($tokens as $token) {
-            $text .= capitalize($token);
+        foreach ($tokens as $index => $token) {
+            if ($case == CASE_CAMEL && $index === 0) {
+                $text = strtolower($token);
+            } else if ($case == CASE_SNAKE) {
+                $text .= strtolower($token) . '_';
+            } else {
+                $text .= capitalize($token);
+            }
+        }
+
+        if ($case == CASE_SNAKE) {
+            $text = substr($text, 0, -1);
         }
 
         return $text;
