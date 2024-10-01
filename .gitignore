@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/php-mvc-blank/config/applicationhost.config
+/.vs/php-mvc-blank/FileContentIndex
+/.vs/php-mvc-blank/v17
+/.vs/phptasks.json
+/.vs/ProjectSettings.json
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json
