@@ -9,6 +9,7 @@ require_once '../lib/functions.php';
 require_once '../lib/autoload.php';
 
 $app = new Application;
+$app::loadEnvVariables();
 
 try {
     $app->handleRequest();

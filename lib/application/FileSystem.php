@@ -21,6 +21,16 @@ class FileSystem
         return is_file($path);
     }
 
+    public static function get(string $filepath)
+    {
+        return file_get_contents($filepath);
+    }
+
+    public static function put(string $filepath, string $content, int $flags = 0)
+    {
+        return file_put_contents($filepath, $content, $flags);
+    }
+
     public static function getDirectories(string $directory, bool $recursive = false)
     {
         $dirEntries = self::getEntries($directory);

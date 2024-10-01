@@ -6,11 +6,44 @@ use Exception;
 
 class Application
 {
+    const ENV_FILE_PATH = ROOT_DIR . DIRECTORY_SEPARATOR . '.env';
+
+    protected static array $env;
     protected array $controllers;
 
     public function __construct()
     {
         $this->controllers = $this->loadControllers();
+    }
+    
+    public static function loadEnvVariables()
+    {
+        self::$env = [];
+        
+        if (!FileSystem::exists(self::ENV_FILE_PATH)) {
+            return;
+        }
+
+        $content = FileSystem::get(self::ENV_FILE_PATH);
+        $matches;
+
+        preg_match_all('/(\w+)="(.*?)"/', $content, $matches);
+        [, $keys, $values] = $matches;
+
+        foreach ($keys as $index => $key) {
+            self::$env[$key] = $values[$index];
+        }
+    }
+
+    public static function getEnv(string $key, string|null $default = null)
+    {
+        $envValue = self::$env[$key]; 
+        
+        if (!isset($envValue)) {
+            return $default;
+        }
+
+        return $envValue;
     }
 
     public function handleRequest()
