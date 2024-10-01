@@ -4,6 +4,11 @@ session_start();
 
 class Session
 {
+    private function __construct()
+    {
+        
+    }
+
     public static function get(string $key, mixed $default = null)
     {
         if (!isset($_SESSION[$key])) {
