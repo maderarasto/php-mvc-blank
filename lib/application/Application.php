@@ -7,8 +7,7 @@ use Exception;
 class Application
 {
     const ENV_FILE_PATH = ROOT_DIR . DIRECTORY_SEPARATOR . '.env';
-
-    protected static array $env;
+    
     protected array $controllers;
 
     public function __construct()
@@ -18,28 +17,26 @@ class Application
     
     public static function loadEnvVariables()
     {
-        self::$env = [];
-        
         if (!FileSystem::exists(self::ENV_FILE_PATH)) {
             return;
         }
 
         $content = FileSystem::get(self::ENV_FILE_PATH);
-        $matches;
+        $matches = [];
 
         preg_match_all('/(\w+)="(.*?)"/', $content, $matches);
         [, $keys, $values] = $matches;
 
         foreach ($keys as $index => $key) {
-            self::$env[$key] = $values[$index];
+            putenv($key . '=' . $values[$index]);
         }
     }
 
     public static function getEnv(string $key, string|null $default = null)
     {
-        $envValue = self::$env[$key]; 
-        
-        if (!isset($envValue)) {
+        $envValue = getenv($key);
+           
+        if (empty($envValue)) {
             return $default;
         }
 
@@ -129,7 +126,7 @@ class Application
             return is_subclass_of($namespace, Controller::class);
         });
 
-        // Reindex values
+        // Re-index values
         $controllerFiles = array_values($controllerFiles);
         
         return array_map(function ($file) {

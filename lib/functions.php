@@ -84,3 +84,10 @@ if (!function_exists('unslug')) {
         return $text;
     }
 }
+
+if (!function_exists('env')) {
+    function env(string $key, string|null $default)
+    {
+        return \Lib\Application\Application::getEnv($key, $default);
+    }
+}
