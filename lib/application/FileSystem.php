@@ -26,6 +26,11 @@ class FileSystem
         return file_get_contents($filepath);
     }
 
+    public static function lines(string $filepath)
+    {
+        return file($filepath);
+    }
+
     public static function put(string $filepath, string $content, int $flags = 0)
     {
         return file_put_contents($filepath, $content, $flags);

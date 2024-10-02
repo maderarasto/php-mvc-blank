@@ -21,15 +21,19 @@ class Application
             return;
         }
 
-        $content = FileSystem::get(self::ENV_FILE_PATH);
-        $matches = [];
+        $lines = FileSystem::lines(self::ENV_FILE_PATH);
+        $lines = array_filter($lines, function ($line) {
+            return !empty(trim($line)) && !str_starts_with($line, '#');
+        });
 
-        preg_match_all('/(\w+)="(.*?)"/', $content, $matches);
-        [, $keys, $values] = $matches;
-
-        foreach ($keys as $index => $key) {
-            putenv($key . '=' . $values[$index]);
+        foreach ($lines as $line) {
+            [$key, $value] = explode('=', $line);
+            echo 'KEY: ' . $key . ', VALUE: ' . $value . '<br />';
         }
+
+        //foreach ($keys as $index => $key) {
+        //    putenv($key . '=' . $values[$index]);
+        //}
     }
 
     public static function getEnv(string $key, string|null $default = null)
