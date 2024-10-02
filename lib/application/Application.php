@@ -28,12 +28,8 @@ class Application
 
         foreach ($lines as $line) {
             [$key, $value] = explode('=', $line);
-            echo 'KEY: ' . $key . ', VALUE: ' . $value . '<br />';
+            putenv($key . '=' . $value);
         }
-
-        //foreach ($keys as $index => $key) {
-        //    putenv($key . '=' . $values[$index]);
-        //}
     }
 
     public static function getEnv(string $key, string|null $default = null)
