@@ -28,7 +28,7 @@ class Application
 
         foreach ($lines as $line) {
             [$key, $value] = explode('=', $line);
-            putenv($key . '=' . $value);
+            putenv($key . '=' . trim($value));
         }
     }
 

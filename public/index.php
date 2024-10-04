@@ -1,7 +1,6 @@
 <?php
 
 use Lib\Application\Application;
-use Lib\Application\Controller;
 
 
 require_once '../lib/defines.php';
@@ -14,5 +13,5 @@ $app::loadEnvVariables();
 try {
     $app->handleRequest();
 } catch (Exception $ex) {
-    echo 'ERROR';
+    die($ex->getMessage());
 }
