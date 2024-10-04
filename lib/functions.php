@@ -86,7 +86,7 @@ if (!function_exists('unslug')) {
 }
 
 if (!function_exists('env')) {
-    function env(string $key, string|null $default)
+    function env(string $key, string|null $default = null)
     {
         return \Lib\Application\Application::getEnv($key, $default);
     }
