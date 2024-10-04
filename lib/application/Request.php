@@ -4,9 +4,17 @@ namespace Lib\Application;
 
 class Request
 {
+    const METHOD_GET = 'GET';
+    const METHOD_POST = 'POST';
+    
     public function __construct()
     {
         
+    }
+
+    public function method()
+    {
+        return $_SERVER['REQUEST_METHOD'];
     }
 
     /** 

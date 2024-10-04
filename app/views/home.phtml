@@ -6,6 +6,10 @@
     <title><?= env('APP_NAME', 'RandomTitle') ?></title>
 </head>
 <body>
-    <h1><?= $data['title'] ?></h1>
+    <form method="POST" action="/form">
+        <input type="text" name="text" />
+        <input type="checkbox" name="values[]" value="1" />
+        <input type="submit" value="Submit" />
+    </form>
 </body>
 </html>
