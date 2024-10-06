@@ -91,3 +91,69 @@ if (!function_exists('env')) {
         return \Lib\Application\Application::getEnv($key, $default);
     }
 }
+
+if (!function_exists('get_class_name')) {
+    function get_class_name(object $obj)
+    {
+        $class = get_class($obj);
+        $classTokens = explode('\\', $class);
+
+        return end($classTokens);
+    }
+}
+
+if (!function_exists('print_object')) {
+    function print_object(object $obj, $indent = 1)
+    {
+        $base_indent = 16;
+        $text = get_class_name($obj) . ' (<br />';
+
+        foreach (get_object_vars($obj) as $key => $value) {
+            if (is_array($value)) {
+                continue;
+            }
+
+            $text .= '<span style="padding-left: ' . ($indent * $base_indent) . 'px;">"' . $key . '" => ';
+
+            if (is_array($value)) {
+                $text .= print_array($value, $indent + 1);
+            } else if (is_string($value)) {
+                $text .= '"' . $value . '",<br />';
+            } else {
+                $text .= $value . ',<br />';
+            }
+        }
+
+        $text .= '<span style="padding-left: ' . (($indent - 1) * $base_indent) . 'px">),</span><br />';
+
+        return $text;
+    }
+}
+
+if (!function_exists('print_array')) {
+    function print_array(array $array, int $indent = 2)
+    {
+        $base_indent = 16;
+        $text = 'Array (<br />';
+
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                continue;
+            }
+
+            $text .= '<span style="padding-left: ' . ($indent * $base_indent) . 'px;">"' . $key . '" => ';
+
+            if (is_array($value)) {
+                $text .= print_array($value, $indent + 1);
+            } else if (is_string($value)) {
+                $text .= '"' . $value . '",<br />';
+            } else {
+                $text .= $value . ',<br />';
+            }
+        }
+
+        $text .= '<span style="padding-left: ' . (($indent - 1) * $base_indent) . 'px">),</span><br />';
+
+        return $text;
+    }
+}

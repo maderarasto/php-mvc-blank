@@ -1,6 +1,7 @@
 <?php
 
 namespace Lib\Application;
+use CommonMark\Node\Text;
 
 class Model
 {
@@ -10,7 +11,7 @@ class Model
     private array $attributes = [];
 
 
-    public function __construct(array $data = [])
+    public function __construct()
     {
         $this->_resolveTableName();
     }
@@ -18,7 +19,7 @@ class Model
     public function __get(string $name)
     {
         if (!isset($this->attributes[$name])) {
-            return null;
+            return $this->$name;
         }
         
         return $this->attributes[$name];
@@ -26,12 +27,48 @@ class Model
     
     public function __set(string $name, mixed $value)
     {
-        $this->attributes[$name] = $value;  
+        if (in_array($name, $this->attributes)) {
+            $this->attributes[$name] = $value;
+        } else {
+            $this->$name = $value;
+        }  
+    }
+
+    public function __tostring()
+    {
+        return $this->_printObject();
+    }
+
+    public function fill(array $data = [])
+    {
+        
     }
 
     public function save()
     {
         
+    }
+
+    private function _printObject($indent = 1)
+    {
+        $base_indent = 16;
+        $text = get_class_name($this) . ' (<br />';
+
+        foreach (get_object_vars($this) as $key => $value) {
+            $text .= '<span style="padding-left: ' . ($indent * $base_indent) . 'px;">"' . $key . '" => ';
+            
+            if (is_array($value)) {
+                $text .= print_array($value, $indent + 1);
+            } else if (is_string($value)) {
+                $text .= '"' . $value . '",<br />';
+            } else {
+                $text .= $value . ',<br />';
+            }
+        }
+
+        $text .= '<span style="padding-left: ' . (($indent - 1) * $base_indent) . 'px">),</span><br />';
+
+        return $text;
     }
 
     private function _resolveTableName()
@@ -40,7 +77,7 @@ class Model
             return;
         }
 
-        $tokens = preg_split('/(?=[A-Z])/', self::getClassName());
+        $tokens = preg_split('/(?=[A-Z])/', get_class_name($this));
         $tokens = array_filter($tokens, function ($token) {
             return !empty($token);
         });
@@ -85,7 +122,7 @@ class Model
             return $models;;
         }
 
-        foreach ($result as $row) {
+        foreach ($result as $row) { 
             $model = self::createModel();
 
             foreach ($row as $column => $value) {
@@ -111,14 +148,6 @@ class Model
     public static function delete(int $id)
     {
         
-    }
-
-    protected static function getClassName()
-    {
-        $class = get_called_class();
-        $classTokens = explode('\\', $class);
-
-        return end($classTokens);
     }
 
     protected static function createModel() : Model
