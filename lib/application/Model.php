@@ -7,6 +7,8 @@ class Model
 {
     protected string $tableName = '';
     protected string $primaryKey = 'id';
+    protected array $fillable = [];
+    protected array $hidden = [];
 
     private array $attributes = [];
 
@@ -19,7 +21,7 @@ class Model
     public function __get(string $name)
     {
         if (!isset($this->attributes[$name])) {
-            return $this->$name;
+            return null;
         }
         
         return $this->attributes[$name];
@@ -27,21 +29,12 @@ class Model
     
     public function __set(string $name, mixed $value)
     {
-        if (in_array($name, $this->attributes)) {
-            $this->attributes[$name] = $value;
-        } else {
-            $this->$name = $value;
-        }  
+        $this->attributes[$name] = $value;
     }
 
     public function __tostring()
     {
         return $this->_printObject();
-    }
-
-    public function fill(array $data = [])
-    {
-        
     }
 
     public function save()
@@ -93,12 +86,16 @@ class Model
     {
         $model = self::createModel();
         $query = 'SELECT * FROM `' . $model->tableName . '` WHERE `' . $model->primaryKey . '` = :id';
-        $result = DB::fetchOne($query, [ 'id' => $id]);
+        $result = DB::fetchOne($query, [ $model->primaryKey => $id]);
 
         if (empty($result))
             return null;
 
         foreach ($result as $column => $value) {
+            if (in_array($column, $model->hidden)) {
+                continue;
+            }
+
             $model->attributes[$column] = $value;
         }
 
@@ -126,6 +123,10 @@ class Model
             $model = self::createModel();
 
             foreach ($row as $column => $value) {
+                if (in_array($column, $model->hidden)) {
+                    continue;
+                }
+
                 $model->attributes[$column] = $value;
             }
 
