@@ -21,7 +21,7 @@ class DB
     }
 
     public function query(string $sql, array $params = []) : PDOStatement
-    {
+    {   
         $stmt = $this->connection->prepare($sql);
         $stmt->execute($params);
 

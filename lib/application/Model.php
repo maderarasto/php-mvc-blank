@@ -86,13 +86,13 @@ class Model
             $sql .= ':' . $column . ', ';
         }
 
-        if (count($attributes)) {
+        if (count($attributes) > 0) {
             $sql = substr($sql, 0, -2);
         }
 
         $sql .= ')';
         
-        $result = DB::execute($sql, $attributes);
+        DB::execute($sql, $attributes);
         $resultId = DB::lastInsertedId();
 
         return $resultId;
@@ -100,7 +100,25 @@ class Model
 
     private function _update(array $attributes)
     {
+        $sql = 'UPDATE ' . $this->tableName . ' SET ';
+
+        foreach (array_keys($attributes) as $column) {
+            if ($column == 'id')
+                continue;
+
+            $sql .= $column . ' = :' . $column . ', ';
+        }
+
+        if (count($attributes) > 0) {
+            $sql = substr($sql, 0, -2);
+        }
+
+        $sql .= ' WHERE ' . $this->primaryKey . ' = :' . $this->primaryKey;
         
+        DB::execute($sql, $attributes);
+        $resultId = DB::lastInsertedId();
+        
+        return $resultId;
     }
 
     private function _printObject($indent = 1)
@@ -206,9 +224,18 @@ class Model
         return $model;
     }
 
-    public static function update(array $data = [])
+    public static function update(int $id, array $data = [])
     {
-        
+        $model = self::find($id);
+
+        if (!$model) {
+            return null;
+        }
+
+        $model->fill($data);
+        $model->save();
+
+        return $model;
     }
 
     public static function delete(int $id)
