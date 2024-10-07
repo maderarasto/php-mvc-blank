@@ -68,6 +68,12 @@ class Model
         }
     }
 
+    public function destroy()
+    {
+        $sql = 'DELETE FROM ' . $this->tableName . ' WHERE ' . $this->primaryKey . ' = :' . $this->primaryKey;
+        $result = DB::execute($sql, [$this->primaryKey => $this->id]);
+    }
+
     private function _insert(array $attributes)
     {
         $sql = 'INSERT INTO `' . $this->tableName . '`(';
@@ -181,6 +187,24 @@ class Model
         return $model;
     }
 
+    public static function findMany(array $ids = [])
+    {
+        $defaultModel = self::createModel();
+        $sql = 'SELECT * FROM `' . $defaultModel->tableName . '` WHERE `' . $defaultModel->primaryKey . '` IN (';
+
+        for ($i = 0; $i < count($ids); $i++) {
+            $sql .= '?,';
+        }
+
+        if (count($ids)) {
+            $sql = substr($sql, 0, -1);
+        }
+
+        $sql .= ')';
+
+        return DB::fetchAll($sql, $ids);
+    }
+
     public static function all(int|null $limit = null)
     {
         $models = [];
@@ -240,7 +264,33 @@ class Model
 
     public static function delete(int $id)
     {
-        
+        $model = self::find($id);
+
+        if (!model) {
+            return false;
+        }
+
+        $model->destroy();
+        return true;
+    }
+
+    public static function deleteMany(array $ids)
+    {
+        $defaultModel = self::createModel();
+        $sql = 'DELETE FROM ' . $defaultModel->tableName . ' WHERE ' . $defaultModel->primaryKey . ' IN (';
+
+        for ($i = 0; $i < count($ids); $i++) {
+            $sql .=  '?,';
+        }
+
+        if (count($ids) > 0) {
+            $sql = substr($sql, 0, -1);
+        }
+
+        $sql .= ')';
+
+        DB::execute($sql, $ids);
+        return true;
     }
 
     protected static function createModel() : Model
