@@ -1,7 +1,6 @@
 <?php
 
 namespace Lib\Application;
-use CommonMark\Node\Text;
 
 class Model
 {
@@ -37,7 +36,69 @@ class Model
         return $this->_printObject();
     }
 
+    public function fill(array $data = [])
+    {
+        foreach ($data as $key => $value) {
+            if (!in_array($key, $this->fillable)) {
+                continue;
+            }
+
+            $this->attributes[$key] = $value;
+        }
+    }
+
     public function save()
+    {
+        $tableColumns = DB::columns($this->tableName);
+
+        // Select attributes that can be stored into DB table.
+        $foundAttrs = array_filter($this->attributes, function (string $attrKey) use ($tableColumns) {
+            return in_array($attrKey, $tableColumns);
+        }, ARRAY_FILTER_USE_KEY);
+
+        if (empty($foundAttrs[$this->primaryKey])) {
+            $result = $this->_insert($foundAttrs);
+        } else {
+            $result = $this->_update($foundAttrs);
+        }
+
+        if (!$result) {
+            // POSSIBLE ERROR
+            return;
+        }
+    }
+
+    private function _insert(array $attributes)
+    {
+        $sql = 'INSERT INTO `' . $this->tableName . '`(';
+
+        foreach (array_keys($attributes) as $column) {
+            $sql .= $column . ', ';
+        }
+
+        if (count($attributes)) {
+            $sql = substr($sql, 0, -2);
+        }
+
+        $sql .= ') VALUES (';
+
+        foreach (array_keys($attributes) as $column) {
+            $sql .= ':' . $column . ', ';
+        }
+
+        if (count($attributes)) {
+            $sql = substr($sql, 0, -2);
+        }
+
+        $sql .= ')';
+        
+        $result = DB::execute($sql, $attributes);
+        $resultId = DB::lastInsertedId();
+
+        return $resultId;
+    }
+
+    private function _update(array $attributes)
     {
         
     }
@@ -138,7 +199,11 @@ class Model
 
     public static function create(array $data = [])
     {
-        
+        $model = self::createModel();
+        $model->fill($data);
+        $model->save();
+
+        return $model;
     }
 
     public static function update(array $data = [])
