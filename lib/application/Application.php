@@ -59,7 +59,15 @@ class Application
         }
 
         $controller = new $controllerCls;
-        call_user_func([ $controller, $controllerAction ]);
+
+        /**
+         * @var Response|void $response
+         */ 
+        $response = call_user_func([ $controller, $controllerAction ]);
+
+        if ($response) {
+            $response->handle();
+        }
     }
 
     public function resolveUrlData()
