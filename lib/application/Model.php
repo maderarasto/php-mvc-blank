@@ -4,19 +4,46 @@ namespace Lib\Application;
 
 class Model
 {
+    /**
+     * Name of corresponding table in DB.
+     * @var string
+     */
     protected string $tableName = '';
+
+    /**
+     * Name of corresponding column in DB for primary key.
+     * @var string
+     */
     protected string $primaryKey = 'id';
+    
+    /**
+     * List of columns that can be mass filled through array.
+     * @var array
+     */
     protected array $fillable = [];
+    
+    /**
+     * List of columns that will not be filled upon query.
+     * @var array
+     */
     protected array $hidden = [];
 
     private array $attributes = [];
 
-
+    /**
+     * Initializes a base model without querieng data.
+     */
     public function __construct()
     {
         $this->_resolveTableName();
     }
 
+    /**
+     * Getter for attributes of model.
+     * 
+     * @param string $name 
+     * @return mixed
+     */
     public function __get(string $name)
     {
         if (!isset($this->attributes[$name])) {
@@ -26,11 +53,22 @@ class Model
         return $this->attributes[$name];
     }
     
+    /**
+     * Setter for attribute of model.
+     * 
+     * @param string $name 
+     * @param mixed $value 
+     */
     public function __set(string $name, mixed $value)
     {
         $this->attributes[$name] = $value;
     }
 
+    /**
+     * String representation for model.
+     * 
+     * @return string
+     */
     public function __tostring()
     {
         return $this->_printObject();
@@ -47,6 +85,12 @@ class Model
         }
     }
 
+    /**
+     * Saves atrributes of current instance. If model doesn't include primary key value it will insert a new record,
+     * otherwise it will update it.
+     * 
+     * @return void
+     */
     public function save()
     {
         $tableColumns = DB::columns($this->tableName);
@@ -68,6 +112,9 @@ class Model
         }
     }
 
+    /**
+     * Deletes record from database with given primary key.
+     */
     public function destroy()
     {
         $sql = 'DELETE FROM ' . $this->tableName . ' WHERE ' . $this->primaryKey . ' = :' . $this->primaryKey;
@@ -167,6 +214,12 @@ class Model
         $this->tableName = implode('_', $tokens);
     }
 
+    /**
+     * Finds record in database and returns instance of model with queried data.
+     * 
+     * @param int $id 
+     * @return Model|null
+     */
     public static function find(int $id)
     {
         $model = self::createModel();
@@ -187,6 +240,12 @@ class Model
         return $model;
     }
 
+    /**
+     * Finds records with given ids and returns isntances of model with queried data.
+     * 
+     * @param array $ids array of ids
+     * @return array array of models
+     */
     public static function findMany(array $ids = [])
     {
         $defaultModel = self::createModel();
@@ -205,6 +264,12 @@ class Model
         return DB::fetchAll($sql, $ids);
     }
 
+    /**
+     * Gets all records from database based on given limit and returns instances of model with queried data.
+     * 
+     * @param int|null $limit 
+     * @return Model[]
+     */
     public static function all(int|null $limit = null)
     {
         $models = [];
@@ -239,6 +304,12 @@ class Model
         return $models;
     }
 
+    /**
+     * Creates a new instance of model filled with data and then stores it in database.
+     * 
+     * @param array $data 
+     * @return Model
+     */
     public static function create(array $data = [])
     {
         $model = self::createModel();
@@ -248,6 +319,13 @@ class Model
         return $model;
     }
 
+    /**
+     * Updates an existing instance of model filled with data and then saves it in database.
+     * 
+     * @param int $id 
+     * @param array $data 
+     * @return Model|null
+     */
     public static function update(int $id, array $data = [])
     {
         $model = self::find($id);
@@ -262,6 +340,12 @@ class Model
         return $model;
     }
 
+    /**
+     * Deletes one record from database based on value of primary key.
+     * 
+     * @param int $id 
+     * @return bool
+     */
     public static function delete(int $id)
     {
         $model = self::find($id);
@@ -274,6 +358,12 @@ class Model
         return true;
     }
 
+    /**
+     * Deletes records from database based on given list of values of primary key.
+     * 
+     * @param array $ids array of ids
+     * @return bool
+     */
     public static function deleteMany(array $ids)
     {
         $defaultModel = self::createModel();
@@ -293,6 +383,11 @@ class Model
         return true;
     }
 
+    /**
+     * Creates an empty instance of model;
+     * 
+     * @return Model instance of model
+     */
     protected static function createModel() : Model
     {
         $class = get_called_class();

@@ -6,6 +6,13 @@ use Exception;
 
 trait CanRenderView
 {
+    /**
+     * Renders a view template and binds data with it.
+     * 
+     * @param string $view path to view seperated by '.'.
+     * @param array $data binding data to view
+     * @throws Exception 
+     */
     function renderView(string $view, array $data = [])
     {
         if (empty($view)) {

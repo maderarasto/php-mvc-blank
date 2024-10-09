@@ -6,6 +6,9 @@ use Lib\Application\Response;
 use Lib\Application\Traits\CanRedirect;
 use Lib\Application\Traits\CanRenderView;
 
+/**
+ * The class represents a object that handles request resolved by actions.
+ */
 class Controller 
 {
     use CanRedirect;
@@ -18,6 +21,11 @@ class Controller
         $this->request = new Request();
     }
 
+    /**
+     * Retrieve a new instance of response.
+     * 
+     * @return Response
+     */
     public function response()
     {
         return new Response();

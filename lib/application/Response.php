@@ -5,6 +5,9 @@ use Exception;
 use Lib\Application\Traits\CanRenderView;
 use parallel\Events\Event\Type;
 
+/**
+ * Represents a response object that provides repond to user with view or json.
+ */
 class Response
 {
     // Statuses
@@ -28,6 +31,11 @@ class Response
 
     use CanRenderView;
 
+    /**
+     * Initialized a response with statuc code. If status code is not present it will set status OK automatically.
+     * 
+     * @param int $code http status code
+     */
     public function __construct(int $code = self::STATUS_OK)
     {
         $this->code = $code;
@@ -36,6 +44,12 @@ class Response
         $this->view = '';
     }
 
+    /**
+     * Sets HTTP status code for response. If status code is not present then it will return status code.
+     * 
+     * @param int|null $code 
+     * @return int|Response
+     */
     public function status(int|null $code = null)
     {
         if (!$code) {
@@ -46,6 +60,13 @@ class Response
         return $this;
     }
 
+    /**
+     * Set a response header with given key and value. If value is not present then it will return header of response.
+     * 
+     * @param string $key 
+     * @param mixed $value 
+     * @return mixed
+     */
     public function header(string $key, mixed $value = null)
     {
         if ($value == null) {
@@ -56,6 +77,13 @@ class Response
         return $this;
     }
 
+    /**
+     * Assign view to response object that will be later handled.
+     * 
+     * @param string $view 
+     * @param array $data 
+     * @return Response
+     */
     public function view(string $view, array $data = [])
     {
         $this->type = self::TYPE_VIEW;
@@ -65,6 +93,12 @@ class Response
         return $this;
     }
 
+    /**
+     * Assign JSON to response object that will be later handled.
+     * 
+     * @param array $data 
+     * @return Response
+     */
     public function json(array $data = [])
     {
         $this->type = self::TYPE_JSON;
@@ -74,11 +108,16 @@ class Response
         return $this;
     }
 
+    /**
+     * Handles a response object after processing it in controllers.
+     */
     public function handle()
     {
         foreach ($this->headers as $key => $value) {
             header("$key: $value");
         }
+
+        http_response_code($this->code);
 
         if ($this->type == self::TYPE_JSON) {
             echo json_encode($this->data);

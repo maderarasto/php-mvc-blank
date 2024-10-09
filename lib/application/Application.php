@@ -15,6 +15,11 @@ class Application
         $this->controllers = $this->loadControllers();
     }
     
+    /**
+     * Loads environment variables from .env file.
+     * 
+     * @return void
+     */
     public static function loadEnvVariables()
     {
         if (!FileSystem::exists(self::ENV_FILE_PATH)) {
@@ -32,6 +37,13 @@ class Application
         }
     }
 
+    /**
+     * Loads environment variable based on key. If value is not found it will return default value.
+     * 
+     * @param string $key 
+     * @param string|null $default 
+     * @return array|bool|string|null
+     */
     public static function getEnv(string $key, string|null $default = null)
     {
         $envValue = getenv($key);
@@ -43,16 +55,21 @@ class Application
         return $envValue;
     }
 
+    /**
+     * Resolves controller and its action based on url. After this it will handle controller's action and its response.
+     * 
+     * @throws Exception 
+     */
     public function handleRequest()
     {
-        $urlData = $this->resolveUrlData();
-        $controllerCls = $this->findController($urlData['controller'])  ;
+        $urlData = $this->_resolveUrlData();
+        $controllerCls = $this->_findController($urlData['controller'])  ;
 
         if (!$controllerCls) {
             throw new Exception('asdas');
         }
 
-        $controllerAction = $this->findControllerAction($controllerCls, $urlData['action']);
+        $controllerAction = $this->_findControllerAction($controllerCls, $urlData['action']);
 
         if (!$controllerAction) {
             throw new Exception('asdas');
@@ -70,7 +87,7 @@ class Application
         }
     }
 
-    public function resolveUrlData()
+    private function _resolveUrlData()
     {
         ['path' => $path] = parse_url($_SERVER['REQUEST_URI']);
         
@@ -94,7 +111,7 @@ class Application
         ];
     }
 
-    public function findController(string $controllerName)
+    private function _findController(string $controllerName)
     {
         if (strpos($controllerName, 'Controller') === false) {
             $controllerName = unslug($controllerName) . 'Controller';
@@ -110,7 +127,7 @@ class Application
         return count($found) > 0 ? $found[0] : null;
     }
 
-    public function findControllerAction(string $controllerCls, string $action)
+    private function _findControllerAction(string $controllerCls, string $action)
     {
         if (strpos($action, 'Action') === false) {
             $action = unslug($action, CASE_CAMEL) . 'Action';
