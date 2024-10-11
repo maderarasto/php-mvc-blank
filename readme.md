@@ -87,11 +87,11 @@ use Lib\Application\Model;
 
 class User extends Model
 {
-	...
+    ...
 }
 ```
 
-##### Custom table name
+#### Custom table name
 If you have custom defined table names you can override name of table that corresponds to your model using `protected` property with type `string`.
 If you define `$tableName` predefined query methods will use this name and will not resolve based on class name.
 
@@ -104,12 +104,12 @@ use Lib\Application\Model;
 
 class User extends Model
 {
-	protected string $tableName = 'wp_users';
-	...
+    protected string $tableName = 'wp_users';
+    ...
 }
 ```
 
-##### Fill attributes of model
+#### Fill attributes of model
 You can populate model attributes with associative array using static methods `create`, `update` or with method `fill` on instance.
 These methods will set only attributes that are listed in `$fillable` field so you should override base model field with your columns:
 ```php
@@ -130,7 +130,7 @@ class User extends Model
 }
 ```
 
-##### Hide attributes in model
+#### Hide attributes in model
 If you don't want to populate some columns while querieng records from database, you can use `$hidden` field 
 to list column names that you don't want to be populated if you use methods like `find`, `findMany` or `all`.
 You could that by overriding this field like this:
@@ -147,5 +147,85 @@ class User extends Model
         'password'
     ];
     ...
+}
+```
+
+### Controllers
+Controller is object that contains methods for handling individual requests based on given url. Controllers should
+handle user's input, communicate with DB and respond to user with result. 
+
+#### Handling request based on URL
+URLs are resolved by schema `https://example.com/{CONTROLLER}/{ACTION}/{PARAMETER}`. Final URL should look like
+`https://example.com/users/get/1` where:
+- controller is `UsersController`
+- action will be handler by `UsersController` method `getAction`
+- parameter will be `1`
+
+#### Creating controller
+##### Manually creating class
+First you will need to create you controller class in `app\controllers` directory that will be extending from class `\Lib\Application\Controller`.
+Name of class should contains `Controller` and should be in pascal case to find its file.
+Each action corresponds to controller's method ended with `Action` in name.
+```php
+<?php
+
+namespace App\Controllers;
+
+use Lib\Application\Controller;
+
+class UsersController extends Controller
+{
+    ....
+    public function getAction()
+    {
+    }
+}
+```
+
+##### Responding with View
+You can respond to user with some view template using `.phtml` file. Views are located in `app/views` directory and can be rendered
+by controller's method `renderView($view, $data)` or returning response object with `view($view, $data)` method.
+
+Both functions are expecting `view` that represents name of view and `$data` representing data extracted to view template.
+View name is based on filepath  relative from `app/views` directory without file extension. Where directory seperator is replaced by `.`. 
+So for view file `app/views/users/index.phtml` should view name be `users.index`.
+```php
+<?php
+
+namespace App\Controllers;
+
+use Lib\Application\Controller;
+
+class UsersController extends Controller
+{
+    ....
+    public function indexAction()
+    {
+        return $this->response()->view('users.index');
+    }
+}
+```
+
+
+##### Responding with JSON
+If you want to respond to user with JSON data you can return response object with `json($data)` method through `response()` method on controller isntance.
+```php
+<?php
+
+namespace App\Controllers;
+
+use Lib\Application\Controller;
+
+class UsersController extends Controller
+{
+    ....
+    public function indexAction()
+    {
+        return $this->response()->json([
+            'users' => [
+                ...
+            ]
+        ]);
+    }
 }
 ```
