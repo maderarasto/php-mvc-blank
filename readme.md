@@ -10,6 +10,7 @@ and `views` (rendering templates).
 2. [Configuration](#configuration)
 3. [Getting Started](#getting-started)
 	- [Database](#database)
+	- [Models](#models)
 
 ## 1. Motivation
 This project was created for purpose to easily create solution for simple MVC application.
@@ -60,10 +61,91 @@ use Lib\Application\DB;
 
 ...
 $result = DB::execute('INSERT INTO users(first_name, last_name, login, password) VALUES(:first_name, :last_name, :login, :password)', [
-	'first_name' => $firstName,
-	'last_name' => $lastName,
-	'login' => $login',
-	'password' => $password
+    'first_name' => $firstName,
+    'last_name' => $lastName,
+    'login' => $login',
+    'password' => $password
 ]);
 ...
+```
+
+### Models
+Models are entity objects that interact with database and each model corresponds to its database table. Models allow you easily interact with database 
+using their methods such as finding records by their primary key, saving them with current state of their data or deleting them.
+
+#### Creating model
+##### Manually creating class
+First you will need to create new class for your model. Each model should extends base model class `\Lib\Application\Model` and should be located in
+`app/models` directory. Name of class should be in pascal case to easily resolve table name for its model.
+
+```php
+<?php
+
+namespace App\Models;
+
+use Lib\Application\Model;
+
+class User extends Model
+{
+	...
+}
+```
+
+##### Custom table name
+If you have custom defined table names you can override name of table that corresponds to your model using `protected` property with type `string`.
+If you define `$tableName` predefined query methods will use this name and will not resolve based on class name.
+
+```php
+<?php
+
+namespace App\Models;
+
+use Lib\Application\Model;
+
+class User extends Model
+{
+	protected string $tableName = 'wp_users';
+	...
+}
+```
+
+##### Fill attributes of model
+You can populate model attributes with associative array using static methods `create`, `update` or with method `fill` on instance.
+These methods will set only attributes that are listed in `$fillable` field so you should override base model field with your columns:
+```php
+<?php
+
+namespace App\Models;
+
+use Lib\Application\Model;
+
+class User extends Model
+{
+    protected string $fillable = [
+        'fullname',
+        'username',
+        'email'
+    ];
+    ...
+}
+```
+
+##### Hide attributes in model
+If you don't want to populate some columns while querieng records from database, you can use `$hidden` field 
+to list column names that you don't want to be populated if you use methods like `find`, `findMany` or `all`.
+You could that by overriding this field like this:
+```php
+<?php
+
+namespace App\Models;
+
+use Lib\Application\Model;
+
+class User extends Model
+{
+    protected string $hidden = [
+        'password'
+    ];
+    ...
+}
 ```
