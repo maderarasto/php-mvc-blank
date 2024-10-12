@@ -229,3 +229,18 @@ class UsersController extends Controller
     }
 }
 ```
+
+### Views
+Views seperate presentational logic from business logic and data from database. View templates are located in `app/views` directory and actual template is `.phtml` file.
+
+View templates are HTML files in which are extracted data from controller and PHP functions can be also used in templates.
+Simple template might look like this:
+```phtml
+<html>
+  <head>
+  </head>
+  <body>
+    <h1><?= $data['title'] ?></h1>
+  </body>
+</html>
+```
