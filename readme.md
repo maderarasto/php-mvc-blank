@@ -11,6 +11,8 @@ and `views` (rendering templates).
 3. [Getting Started](#getting-started)
 	- [Database](#database)
 	- [Models](#models)
+    - [Controllers](#controllers)
+    - [Views](#views)
 
 ## 1. Motivation
 This project was created for purpose to easily create solution for simple MVC application.
