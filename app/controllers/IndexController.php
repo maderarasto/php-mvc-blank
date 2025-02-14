@@ -8,6 +8,6 @@ class IndexController extends Controller
 {
     public function indexAction() 
     {   
-        $this->renderView('home', ['title' => 'Nadpis']);
+        $this->renderView('home', ['title' => 'Nadpis'], 'layout.main');
     }
 }

@@ -6,14 +6,7 @@ use Exception;
 
 trait CanRenderView
 {
-    /**
-     * Renders a view template and binds data with it.
-     * 
-     * @param string $view path to view seperated by '.'.
-     * @param array $data binding data to view
-     * @throws Exception 
-     */
-    function renderView(string $view, array $data = [])
+    function resolveViewPath(string $view, $rootDir = VIEWS_DIR)
     {
         if (empty($view)) {
             throw new Exception('A view template "' . $view . '" not found!');
@@ -30,9 +23,36 @@ trait CanRenderView
             $viewPath = substr($viewPath, 0, -1);
         }
 
-        $viewPath = VIEWS_DIR . DIRECTORY_SEPARATOR . $viewPath . '.phtml';
+        return $rootDir . DIRECTORY_SEPARATOR . $viewPath . '.phtml';
+    }
 
-        extract(['data' => $data]);
-        require($viewPath);
+    /**
+     * Renders a view template and binds data with it.
+     * 
+     * @param string $view path to view seperated by '.'.
+     * @param array $data binding data to view
+     * @throws Exception 
+     */
+    function renderView(string $view, array $data = [], $layout = '')
+    {   
+        $viewPath = $this->resolveViewPath($view);
+
+        if (empty($layout)) {
+            $rootDir = LIB_DIR . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR . 'views';
+            $layoutPath = $this->resolveViewPath('layout', $rootDir);
+        } else {
+            $layoutPath = $this->resolveViewPath($layout);
+        }
+
+        extract([
+            'slot' => function () use ($viewPath, $data) {
+                include $viewPath;
+            },
+            'includeView' => function ($view) {
+                include $this->resolveViewPath($view);
+            }
+        ]);
+
+        require $layoutPath;
     }
 }

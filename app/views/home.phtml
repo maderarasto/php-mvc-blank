@@ -1,15 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= env('APP_NAME', 'RandomTitle') ?></title>
-</head>
-<body>
-    <form method="POST" action="/form">
-        <input type="text" name="text" />
-        <input type="checkbox" name="values[]" value="1" />
-        <input type="submit" value="Submit" />
-    </form>
-</body>
-</html>
+<form method="POST" action="/form">
+    <input type="text" name="text" />
+    <input type="checkbox" name="values[]" value="1" />
+    <input type="submit" value="Submit" />
+</form>
