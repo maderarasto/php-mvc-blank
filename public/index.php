@@ -2,6 +2,7 @@
 
 use App\Models\DropzoneHistory;
 use Lib\Application\Application;
+use Lib\Application\ServiceContainer;
 use Lib\Application\DB;
 
 
@@ -11,6 +12,11 @@ require_once '../lib/autoload.php';
 
 $app = new Application;
 $app::loadEnvVariables();
+
+// Register services
+ServiceContainer::register([
+    
+]);
 
 try {
     $app->handleRequest();

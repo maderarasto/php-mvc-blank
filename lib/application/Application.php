@@ -3,6 +3,7 @@
 namespace Lib\Application;
 
 use Exception;
+use Lib\Application\ServiceContainer;
 
 class Application
 {
@@ -13,6 +14,7 @@ class Application
     public function __construct()
     {
         $this->controllers = $this->loadControllers();
+        ServiceContainer::getInstance();
     }
     
     /**
