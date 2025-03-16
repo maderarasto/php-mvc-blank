@@ -46,6 +46,13 @@ trait CanRenderView
 
         extract([
             'slot' => function () use ($viewPath, $data) {
+                extract([
+                    'data' => $data,
+                    'includeView' => function ($view, $data = []) {
+                        include $this->resolveViewPath($view);
+                    }
+                ]);
+
                 include $viewPath;
             },
             'includeView' => function ($view) {
