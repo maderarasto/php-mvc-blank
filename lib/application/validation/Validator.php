@@ -13,6 +13,7 @@ class Validator
 
     private array $ruleBindings = [
         'array' => Rules\ArrayRule::class,
+        'size' => Rules\SizeRule::class,
     ];
 
     public function __construct(array $rules, array $messages = [])
