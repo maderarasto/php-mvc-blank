@@ -85,9 +85,9 @@ class Validator
                     $this->errors[$field][] = $this->resolveMessage($field, $rule);
                 }
             }
-
-            return empty($this->errors);
         }
+
+        return empty($this->errors);
     }
 
     protected function resolveMessage(string $field, ValidationRule $rule)
