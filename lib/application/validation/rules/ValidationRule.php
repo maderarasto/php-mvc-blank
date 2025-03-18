@@ -6,6 +6,7 @@ abstract class ValidationRule
 {
     protected const TYPE_INT = 1;
     protected const TYPE_STR = 2;
+    protected const TYPE_BOOLEAN = 3;
 
     protected string $keyword;
     protected array $arguments;
@@ -49,6 +50,8 @@ abstract class ValidationRule
         return array_map(function ($arg) use($type) {
             if ($type === self::TYPE_INT) {
                 $var = filter_var($arg, FILTER_VALIDATE_INT);
+            } else if ($type === self::TYPE_BOOLEAN) {
+                $var = in_array($arg, [0, 1, "0", "1", true, false], true) ? !!$arg : $arg;
             } else {
                 $var = $arg;
             }
@@ -78,7 +81,6 @@ abstract class ValidationRule
 
 // Rules
 // -----
-// "between:0,10"       => hodnota musi byt medzi 0 a 10
 // "boolean"            => hodnota musi byt boolean
 // "contains:foo,bar"   => hodnota musi obsahovat vsetky string
 // "date"               => hodnota musi byt datum

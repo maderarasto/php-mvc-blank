@@ -14,6 +14,8 @@ class Validator
     private array $ruleBindings = [
         'array' => Rules\ArrayRule::class,
         'size' => Rules\SizeRule::class,
+        'between' => Rules\BetweenRule::class,
+        'boolean' => Rules\BooleanRule::class,
     ];
 
     public function __construct(array $rules, array $messages = [])
