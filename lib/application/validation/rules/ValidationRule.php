@@ -4,9 +4,12 @@ namespace Lib\Application\Validation\Rules;
 
 abstract class ValidationRule
 {
+    protected const TYPE_INT = 1;
+    protected const TYPE_STR = 2;
+
     protected string $keyword;
     protected array $arguments;
-    private  string $message;
+    private  string $message = '';
 
     public function __construct(string $keyword, array $args)
     {
@@ -41,6 +44,21 @@ abstract class ValidationRule
         return $text;
     }
 
+    protected static function parseArguments(array $args, int $type = self::TYPE_STR)
+    {
+        return array_map(function ($arg) use($type) {
+            if ($type === self::TYPE_INT) {
+                $var = filter_var($arg, FILTER_VALIDATE_INT);
+            } else {
+                $var = $arg;
+            }
+
+            return $var;
+            
+
+        }, $args);
+    }
+
     /**
      * Validates a rule. If rule fails it will set up message.
      * 
@@ -60,8 +78,6 @@ abstract class ValidationRule
 
 // Rules
 // -----
-// "array"              => hondnota musi byt pole
-// "size:10"            => velkost pola musi byt velkosti 10
 // "between:0,10"       => hodnota musi byt medzi 0 a 10
 // "boolean"            => hodnota musi byt boolean
 // "contains:foo,bar"   => hodnota musi obsahovat vsetky string
