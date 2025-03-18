@@ -17,6 +17,9 @@ class Validator
         'between' => Rules\BetweenRule::class,
         'boolean' => Rules\BooleanRule::class,
         'contain' => Rules\ContainRule::class,
+        'date' => Rules\DateRule::class,
+        'date_format' => Rules\DateFormatRule::class,
+        'email' => Rules\EmailRule::class,
     ];
 
     public function __construct(array $rules, array $messages = [])
