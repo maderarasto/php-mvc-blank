@@ -21,7 +21,10 @@ class Validator
         'date_format' => Rules\DateFormatRule::class,
         'email' => Rules\EmailRule::class,
         'ends_with' => Rules\EndsWithRule::class,
+        'json' => Rules\JsonRule::class,
         'lowercase' => Rules\LowercaseRule::class,
+        'numeric' => Rules\NumericRule::class,
+        'string' => Rules\StringRule::class,
         'starts_with' => Rules\StartsWithRule::class,
         'uppercase' => Rules\UppercaseRule::class,
     ];
