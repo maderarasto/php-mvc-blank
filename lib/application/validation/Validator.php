@@ -16,6 +16,7 @@ class Validator
         'size' => Rules\SizeRule::class,
         'between' => Rules\BetweenRule::class,
         'boolean' => Rules\BooleanRule::class,
+        'contain' => Rules\ContainRule::class,
     ];
 
     public function __construct(array $rules, array $messages = [])
