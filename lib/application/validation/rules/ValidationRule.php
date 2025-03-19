@@ -73,7 +73,7 @@ abstract class ValidationRule
 
     /**
      * Gets messages with unique keys.
-     * 
+     * W
      * @return array
      */
     abstract protected function messages();
@@ -81,20 +81,5 @@ abstract class ValidationRule
 
 // Rules
 // -----
-// "boolean"            => hodnota musi byt boolean
-// "contains:foo,bar"   => hodnota musi obsahovat vsetky string
-// "date"               => hodnota musi byt datum
-// "date_format:Y-m-d"  => datum musi byt daneho formatu
-// "email"              => "hodnota musi byt email"
-// "ends_with:foo,bar"  => "hodnota musi koncit jednym zo slov
-// "integer"            => hodnota musi byt integer
-// "json"               => hodnota musi byt json
-// "lowercase"          => text musi byt malymi pismenami
 // "max:255"            => hodnota musi byt mensia alebo rovna ako 255
 // "min:255"            => hodnota musi byt vacsia alebo rovna ako 255
-// "numeric"            => hodnota musi byt cislo
-// "required"           => hodnota je povinna
-// "same:field"         => hodntoa musi mat rovnaku hodnotu ako pole "field"
-// "starts_with:foo,bar"=> hodnota musi zacinat s jednou z hodnot
-// "string              => hodnota musi byt text
-// "uppercase"          => hodnota musi byt v uppercase formate

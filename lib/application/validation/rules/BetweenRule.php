@@ -29,7 +29,7 @@ class BetweenRule extends ValidationRule
             return is_between(strlen($value), $min, $max) ?: $this->fail(self::MESSAGE_BETWEEN_STRING);
         } else if (is_array($value)) {
             return is_between(count($value), $min, $max) ?: $this->fail(self::MESSAGE_BETWEEN_ARRAY);
-        } else if (!is_between($value, $min, $max)) {
+        } else if ($value === null || !is_between($value, $min, $max)) {
             return $this->fail(self::MESSAGE_BETWEEN);
         }
 
@@ -41,7 +41,7 @@ class BetweenRule extends ValidationRule
         [$min, $max] = $this->arguments;
 
         return [
-            self::MESSAGE_BETWEEN => 'The :field must be between' . $min . ' and ' .  $max . '.',
+            self::MESSAGE_BETWEEN => 'The :field must be between ' . $min . ' and ' .  $max . '.',
             self::MESSAGE_BETWEEN_STRING => 'The :field must have length between ' . $min . ' and ' .  $max . ' characters.',
             self::MESSAGE_BETWEEN_ARRAY => 'The :field must have size between ' . $min . ' and ' .  $max . '.',
         ];

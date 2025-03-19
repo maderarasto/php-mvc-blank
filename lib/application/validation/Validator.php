@@ -21,11 +21,15 @@ class Validator
         'date_format' => Rules\DateFormatRule::class,
         'email' => Rules\EmailRule::class,
         'ends_with' => Rules\EndsWithRule::class,
+        'integer' => Rules\IntegerRule::class,
         'json' => Rules\JsonRule::class,
         'lowercase' => Rules\LowercaseRule::class,
+        'min' => Rules\MinimumRule::class,
+        'max' => Rules\MaximumRule::class,
         'numeric' => Rules\NumericRule::class,
-        'string' => Rules\StringRule::class,
+        'required' => Rules\RequiredRule::class,
         'starts_with' => Rules\StartsWithRule::class,
+        'string' => Rules\StringRule::class,
         'uppercase' => Rules\UppercaseRule::class,
     ];
 
@@ -63,7 +67,13 @@ class Validator
         $toValidate = array_filter($data, function ($key) {
             return array_key_exists($key, $this->rules);
         }, ARRAY_FILTER_USE_KEY);
-        
+
+        foreach (array_keys($this->rules) as $field) {
+            if (!array_key_exists($field, $data)) {
+                $toValidate[$field] = null;
+            }
+        }
+
         foreach ($toValidate as $field => $value) {
             $validRules = array_filter($this->rules[$field], function ($ruleKeyword) {
                 [$keyword] = explode(':', $ruleKeyword);
@@ -77,7 +87,7 @@ class Validator
 
             $rules = array_map(function ($value) {
                 [$keyword, $args] = array_pad(explode(':', $value), 2, null);
-                $args = explode(',', $args) ?? [];
+                $args = isset($args) ? explode(',', $args) : [];
                 
                 if (!$keyword) {
                     throw new Exception("Validation rule \"$keyword\" not found!");
@@ -88,7 +98,8 @@ class Validator
             
             /** @var ValidationRule */
             foreach ($rules as $rule) {
-                $valid = $rule->validate($field, $data[$field]);
+                
+                $valid = $rule->validate($field, $toValidate[$field]);
                 [$key, $message] = $rule->message();
                 
                 if (!$valid && !array_key_exists($field, $this->errors)) {
