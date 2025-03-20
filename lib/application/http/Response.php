@@ -1,9 +1,8 @@
 <?php
 
-namespace Lib\Application;
-use Exception;
+namespace Lib\Application\Http;
+
 use Lib\Application\Traits\CanRenderView;
-use parallel\Events\Event\Type;
 
 /**
  * Represents a response object that provides repond to user with view or json.
@@ -25,6 +24,7 @@ class Response
 
     private int $code;
     private array $headers;
+    private string $layout;
     private array $data;
     private string $view;
     private int $type;
@@ -40,6 +40,7 @@ class Response
     {
         $this->code = $code;
         $this->headers = [];
+        $this->layout = '';
         $this->data = [];
         $this->view = '';
     }
@@ -78,6 +79,18 @@ class Response
     }
 
     /**
+     * Set a layout for rendered view.
+     * 
+     * @param string $layout
+     * @return Response
+     */
+    public function layout(string $layout)
+    {
+        $this->layout = $layout;
+        return $this;
+    }
+
+    /**
      * Assign view to response object that will be later handled.
      * 
      * @param string $view 
@@ -108,6 +121,11 @@ class Response
         return $this;
     }
 
+    public function uri()
+    {
+        return ltrim($_SERVER['REQUEST_URI'], '/');
+    }
+
     /**
      * Handles a response object after processing it in controllers.
      */
@@ -122,7 +140,7 @@ class Response
         if ($this->type == self::TYPE_JSON) {
             echo json_encode($this->data);
         } else if ($this->type == self::TYPE_VIEW) {
-            $this->renderView($this->view, $this->data);
+            $this->renderView($this->view, $this->data, $this->layout);
         }
     }
 }

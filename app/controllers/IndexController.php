@@ -3,11 +3,14 @@
 namespace App\Controllers;
 
 use Lib\Application\Controller;
+use Lib\Application\Http\Request;
 
 class IndexController extends Controller 
 {
-    public function indexAction() 
+    public function indexAction(Request $request) 
     {   
-        $this->renderView('home', ['title' => 'Nadpis'], 'layout.main');
+        $this->response()
+            ->layout('layout.main')
+            ->view('home', [ 'title' => 'Header' ]);
     }
 }

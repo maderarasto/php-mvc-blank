@@ -157,3 +157,18 @@ if (!function_exists('print_array')) {
         return $text;
     }
 }
+
+if (!function_exists('is_json')) {
+    function is_json($str) 
+    {
+        json_decode($str);
+        return json_last_error() === JSON_ERROR_NONE;
+    }
+}   
+
+if (!function_exists('is_between')) {
+    function is_between(int $value, int $min, int $max)
+    {
+        return $value >= $min && $value <= $max;
+    }
+}

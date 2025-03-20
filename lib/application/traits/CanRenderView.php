@@ -3,6 +3,7 @@
 namespace Lib\Application\Traits;
 
 use Exception;
+use Lib\Application\Session;
 
 trait CanRenderView
 {
@@ -36,6 +37,7 @@ trait CanRenderView
     function renderView(string $view, array $data = [], $layout = '')
     {   
         $viewPath = $this->resolveViewPath($view);
+        $errors = [];
 
         if (empty($layout)) {
             $rootDir = LIB_DIR . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR . 'views';
@@ -44,10 +46,16 @@ trait CanRenderView
             $layoutPath = $this->resolveViewPath($layout);
         }
 
+        if (Session::has('errors')) {
+            $errors = Session::get('errors');
+            Session::clear('errors');
+        }
+
         extract([
-            'slot' => function () use ($viewPath, $data) {
+            'slot' => function () use ($viewPath, $data, $errors) {
                 extract([
                     'data' => $data,
+                    'errors' => $errors,
                     'includeView' => function ($view, $data = []) {
                         include $this->resolveViewPath($view);
                     }
@@ -55,11 +63,13 @@ trait CanRenderView
 
                 include $viewPath;
             },
+            'errors' => $errors,
             'includeView' => function ($view) {
                 include $this->resolveViewPath($view);
             }
         ]);
 
         require $layoutPath;
+        exit;
     }
 }

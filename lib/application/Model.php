@@ -28,7 +28,7 @@ class Model
      */
     protected array $hidden = [];
 
-    private array $attributes = [];
+    protected array $attributes = [];
 
     /**
      * Initializes a base model without querieng data.
@@ -350,7 +350,7 @@ class Model
     {
         $model = self::find($id);
 
-        if (!model) {
+        if (!$model) {
             return false;
         }
 

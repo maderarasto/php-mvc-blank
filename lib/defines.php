@@ -11,3 +11,9 @@ defined('VIEWS_DIR') || define('VIEWS_DIR', APP_DIR . DIRECTORY_SEPARATOR . 'vie
 defined('CASE_CAMEL') || define('CASE_CAMEL', 1);
 defined('CASE_PASCAL') || define('CASE_PASCAL', 2);
 defined('CASE_SNAKE') || define('CASE_SNAKE', 3);
+
+// Settings
+defined('IS_DEBUG') || define('IS_DEBUG', true);
+
+// Utilities
+defined('HTML_EOL') || define('HTML_EOL', '<br />');

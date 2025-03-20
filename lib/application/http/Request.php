@@ -1,6 +1,6 @@
 <?php
 
-namespace Lib\Application;
+namespace Lib\Application\Http;
 
 class Request
 {
@@ -15,6 +15,16 @@ class Request
     public function method()
     {
         return $_SERVER['REQUEST_METHOD'];
+    }
+
+    public function uri()
+    {
+        return ltrim($_SERVER['REQUEST_URI'], '/');
+    }
+
+    public function referer()
+    {
+        return $_SERVER['HTTP_REFERER'];
     }
 
     /** 
@@ -192,9 +202,9 @@ class Request
      */
     public function only(array $keys) : array
     {
-        return array_filter(array_keys($_POST), function ($key) use ($keys) {
+        return array_filter($_POST, function ($key) use ($keys) {
             return in_array($key, $keys);
-        });
+        }, ARRAY_FILTER_USE_KEY);
     }
 
     /**

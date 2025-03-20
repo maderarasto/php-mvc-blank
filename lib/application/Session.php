@@ -1,5 +1,7 @@
 <?php
 
+namespace Lib\Application;
+
 session_start();
 
 /**
@@ -36,6 +38,17 @@ class Session
     public static function keys()
     {
         return array_keys($_SESSION);
+    }
+
+    /**
+     * Gets keys of variables stored in session storage.
+     * 
+     * @param string $key
+     * @return bool
+     */
+    public static function has(string $key)
+    {
+        return array_key_exists($key, $_SESSION);
     }
 
     /**

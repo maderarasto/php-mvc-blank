@@ -2,9 +2,9 @@
 
 namespace Lib\Application;
 
-use Lib\Application\Response;
+use Lib\Application\Http\Request;
+use Lib\Application\Http\Response;
 use Lib\Application\Traits\CanRedirect;
-use Lib\Application\Traits\CanRenderView;
 
 /**
  * The class represents a object that handles request resolved by actions.
@@ -12,13 +12,12 @@ use Lib\Application\Traits\CanRenderView;
 class Controller 
 {
     use CanRedirect;
-    use CanRenderView;
 
-    protected Request $request;
+    protected string $guard = '';
 
-    public function __construct() 
+    public function guard()
     {
-        $this->request = new Request();
+        return $this->guard;
     }
 
     /**

@@ -24,7 +24,7 @@ spl_autoload_register(function ($namespace) {
             $token = substr($token, 0, strlen($token) - 1);
         }
 
-        if ($index === count($tokens) - 1) {
+        if ($token && $index === count($tokens) - 1) {
             $token = strtoupper($token[0]) . substr($token, 1);
         }
 
